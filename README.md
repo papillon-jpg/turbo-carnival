@@ -224,4 +224,230 @@ function prikaziKorisnike() {
 </script>
 </body>
 </html>
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////7
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+<html>
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css"> 
+</head> 
+
+<body>
+	<div>
+		<table>
+			<tr>
+				<td>
+				<h2>Izbor Matematičke Operacije</h2>
+				</td>
+			</tr>
+			
+			<tr>
+				<td>
+				<p>Odaberi opciju:</p>
+				</td>
+			</tr>
+			
+			<tr>
+				<td>
+					<label><input type="radio" name="operacija" value="sabiranje">Sabiranje</label>
+					<label><input type="radio" name="operacija" value="oduzimanje">Oduzimanje</label>
+					<label><input type="radio" name="operacija" value="mnozenje">Množenje</label>
+					<label><input type="radio" name="operacija" value="dijeljenje">Dijeljenje</label>
+				</td>
+			</tr>
+			
+			<tr>
+				<td>
+					<label>Prvi broj: <input type="number" id="broj1"></label>
+					<br>
+					<label>Drugi broj: <input type="number" id="broj2"></label>
+				</td>
+			</tr>
+			
+			<tr>
+				<td>
+				<button class="zelena" onClick="izvrsiOperaciju()">Izvrši operaciju</button>
+				<button class="crvena" onClick="ponistiUnos()">Poništi</button>
+				<button class="crna" onClick="izlaz()">Izlaz</button>
+				</td>
+			</tr>
+			
+			<tr>
+				<td>
+				<h3>Rezultat:</h3>
+				<textarea id="rezultat" readonly></textarea>
+				</td>
+			</tr>
+			
+			<tr>
+				<td>
+				<p id="datum"></p>
+				</td>
+			</tr>
+		</table>
+	</div>
+	
+<script>
+	function izvrsiOperaciju() {
+		//prikupljanje vrijednosti
+		var broj1 = document.getElementById("broj1").value;
+		var broj2 = document.getElementById("broj2").value;
+		var rezultatTextArea = document.getElementById("rezultat");
+		
+		//validacija za odabranu opciju 
+		var operacija = document.querySelector('input[name="operacija"]:checked');
+		if(!operacija) {
+			alert("Morate odabrati prvo matematičku operaciju");
+			return;
+		}
+		
+		//validacija da li su oba broja unesena
+		if(broj1 === "" || broj2 === "") {
+			alert("Morate unijeti oba broja!");
+			return;
+		}
+		
+		//validacija da li su unijeti brojevi (ili slovo ili prazan znak)
+		if(isNaN(broj1) || isNaN(broj2)) {
+			alert("Morate unijeti brojeve!");
+			return;
+		}
+		
+		//pretvaranje unijetih vrijednosti u brojeve
+		broj1 = parseFloat(broj1);
+		broj2 = parseFloat(broj2);
+		
+		//izbor operacije
+		var operacijaValue = operacija.value;
+		var rezultat; 
+		
+		switch (operacijaValue) {
+			case "sabiranje":
+				rezultat = broj1 + broj2;
+				break;
+			
+			case "oduzimanje":
+				rezultat = broj1 - broj2;
+				break;
+				
+			case "mnozenje":
+				rezultat = broj1 * broj2;
+				break;
+				
+			case "dijeljenje":
+				if(broj2 === 0) {
+					alert("Dijeljenje s nulom nije moguće!");
+					return;
+				}
+				rezultat = broj1 / broj2;
+				break;
+				
+			default:
+				alert("Nepoznata operacija");
+				return;
+		}
+		
+		rezultatTextArea.value = "Rezultat: " + rezultat;
+	}
+	
+	function updateDateTime() {
+		document.getElementById("datum").innerText = new Date().toLocaleString();
+	}
+
+	setInterval(updateDateTime, 1000); // Ažurira svakih 1000 ms (1 sekunda)
+
+	
+	function ponistiUnos() {
+        document.getElementById("broj1").value = "";
+        document.getElementById("broj2").value = "";
+        document.getElementById("rezultat").value = "";
+	}
+	
+	function izlaz() {
+		window.close();
+	}
+</script>
+</body>
+</html>
+
+
+CSS:
+body {
+	font-family: Arial, sans-serif;
+	padding: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+	margin: 0;
+	background-color: #f4f4f4;
+}
+
+table {
+	border: 1px solid #ccc;
+	padding: 20px;
+	background-color: #fff;
+	border-radius: 8px;
+}
+
+td, th {
+	padding: 10px;
+}
+
+label {
+	display: inline-block;
+	margin-bottom: 5px;
+}
+
+input[type="number"] {
+	width: 100px;
+}
+
+textarea {
+	width: 100%;
+	height: 150px;
+	margin-top: 10px;
+}
+
+.radio-group label{
+	margin-right: 15px;
+}
+
+button {
+	padding: 8px 15px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	margin-right: 10px;
+	opacity: 0.8;
+}
+
+button.zelena{
+	background-color: #4CAF50;
+	color: white;
+}
+
+button.crvena{
+	background-color: #f44336;
+	color: white;
+}
+
+button.crna{
+	background-color: #000;
+	color: white;
+}
+
+#datum {
+	margin-top: 20px;
+	font-size: 14px;
+	background-color: #fff;
+	padding: 5px 10px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+	width: fit-content;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
