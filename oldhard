@@ -1,0 +1,1087 @@
+///////////////////////////////////prijava
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title> </title>
+</head>
+
+<body>
+
+	<div style="width: 50%; margin: 0 auto;">
+		<h2>Prijava na Fakultet UNBI</h2>
+		Dodaj <input type="radio" name="opcija" onclick="prikaziSakrij('dodaj', 'visible')"/> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+		Pogledaj <input type="radio" name="opcija" onclick="prikaziSakrij('pregledaj', 'visible')"/>
+		
+		<div id="dodaj" style="margin-top: 50px; visibility:hidden">
+			<h2>Dodaj</h2>
+			<table>
+				<tr>
+					<td>
+						Ime i prezime:
+					</td>
+					<td>
+						<input type="text" id="ime"/>
+					</td>
+					<td>
+						<span id="imeProvjera" style="color: red;"></span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Broj JMBG:
+					</td>
+					<td>
+						<input type="text" id="jmbg"/>
+					</td>
+					<td>
+						<span id="jmbgProvjera" style="color: red;"></span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Spol studenta:
+					</td>
+					<td>
+						<select id="spol">
+							<option>...</option>
+							<option value="M">Muški</option>
+							<option value="Z">Ženski</option>
+						</select>
+					</td>
+					<td>
+						<span id="spolProvjera" style="color: red;"></span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Fakultet:
+					</td>
+					<td>
+						<select id="fakultet">
+							<option value="TF">Tehnički fakultet</option>
+							<option value="PRF">Pravni fakultet</option>
+							<option value="EF">Ekonomski fakultet</option>
+							<option value="BTF">Biotehnički fakultet</option>
+							<option value="PF">Pedagoški fakultet</option>
+							<option value="IPF">Islamski pedagoški fakultet</option>
+							<option value="FZS">Fakultet zdravstvenih studija</option>
+						</select>
+					</td>
+					<td>
+						<span style="color: red;"></span>
+					</td>
+				</tr>		
+				<tr>
+					<td>
+						Potvrda registacije:
+					</td>
+					<td>
+						<input type="button" id="btn1" value="POTVRDI" onclick="dodajStudenta()"/>
+					</td>
+					<td>
+						<span style="color: red;"></span>
+					</td>
+				</tr>
+			</table>
+		</div>
+		
+		<div id="pregledaj" style="margin-top: 50px; visibility:hidden">
+			<h3>Spisak prijavljenih studenata</h3>
+			<div id="tabela">
+				
+			</div>
+			Status: <br>
+			Zadovoljio: <input type="radio" name="status" id="status1" value="zeleni"/> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+			Nije zadovoljio: <input type="radio" name="status" id="status2" value="crveni"/> <br>
+			Označi polje: <br>
+			<input type="text" id="polje">
+			<input type="button" id="btn2" value="STATUS" onclick="dodijeliStatus('polje')"/> &nbsp 
+			<input type="button" id="btn3" value="BRISANJE" onclick="ukoniIzTabele('polje')"/> &nbsp
+			<input type="button" id="btn4" value="PRINTANJE" onclick="window.print()"/>
+		</div>
+		
+	</div>
+
+	<script ">
+	var studenti = [];
+function preuzmi(id) {
+	if(document.getElementById(id))
+		return document.getElementById(id);
+	else {
+		alert("Nepravilan ID objekta");
+		return false;
+	}
+}
+
+function validacijaImePrezime(imePrezime) {
+	var regexp = /^[a-zA-Z\s]+$/;
+	if(imePrezime.match(regexp)) {
+		preuzmi("imeProvjera").innerHTML = "";
+		return true;
+	}
+	else {
+		preuzmi("imeProvjera").innerHTML = "Niste pravilno unijeli ime i prezime!";
+		return false;
+	}
+}
+
+function validacijaBrojajmbg(jmbg, fakultet) {
+	var regexp = /^[0-9]+$/;
+	if(jmbg.match(regexp)) {
+		jmbg = parseInt(jmbg);
+		for(i = 0; i<studenti.length; i++) {
+			if(studenti[i].fakultet == fakultet && studenti[i].jmbg == jmbg) {
+				preuzmi("jmbgProvjera").innerHTML = "Niste pravilno unijeli broj JMBG!";
+				return false;
+			}
+		}
+		preuzmi("jmbgProvjera").innerHTML = "";
+		return true;
+	}
+	else {
+		preuzmi("jmbgProvjera").innerHTML = "Niste pravilno unijeli broj JMBG!";
+		return false;
+	}
+}
+
+function validacijaSpolaStudenta(spol) {
+	if(spol == "M" || spol == "Z") {
+		preuzmi("spolProvjera").innerHTML = "";
+		return true;
+	}
+	else {
+		preuzmi("spolProvjera").innerHTML = "Niste izabrali spol!";
+		return false;
+	}
+}
+
+
+
+function prikaziSakrij(id, stanje)  {
+	var obj = document.getElementById(id);
+	if(id == "dodaj") {
+		obj.style.visibility = stanje;
+		document.getElementById("pregledaj").style.visibility = "hidden";
+	}
+	else {
+		obj.style.visibility = stanje;
+		document.getElementById("dodaj").style.visibility = "hidden";
+	}
+}
+
+function dodajStudenta() {
+	var ime = preuzmi("ime").value;
+	var jmbg = preuzmi("jmbg").value;
+	var spol = preuzmi("spol").value;
+	var fakultet = preuzmi("fakultet").value;
+	
+	var v1 = validacijaImePrezime(ime);
+	var v2 = validacijaBrojajmbg(jmbg, fakultet);
+	var v3 = validacijaSpolaStudenta(spol);
+	
+	if(v1 && v2 && v3) {
+		var student = {ime: ime, jmbg: jmbg, fakultet: fakultet, spol: spol, status: "nema"};
+		studenti.push(student);
+		kreirajTabelu("tabela");
+	
+	alert("Unos izvršen");
+	}
+}
+
+
+function dodijeliStatus(id) {
+	var obj = preuzmi(id).value;
+	var zeleni = preuzmi("status1");
+	var crveni = preuzmi("status2");
+	var status;
+	if(zeleni.checked) {
+		status = "zeleni";
+	}
+	if (crveni.checked) {
+		status = "crveni";
+	}
+	
+	for(i = 0; i<studenti.length; i++) {
+		if((i+1) == obj) {
+			studenti[i].status = status;
+		}
+	}
+	kreirajTabelu("tabela");
+		
+		if (obj == "") {
+        alert('Unesite ID studetna kojem zelite dodijeliti status!');
+                }
+}
+
+
+function ukoniIzTabele(id) {
+	var obj = preuzmi(id).value;
+	
+	for(i = 0; i<studenti.length; i++) {
+		if((i+1) == obj) {
+			studenti.splice(i, 1); //splice uklanja elemente
+		}
+	}
+	if (obj == "") {
+        alert('Unesite ID studetna kojeg zelite obrisati iz tabele!');
+                }
+	kreirajTabelu("tabela");
+}
+
+function kreirajTabelu(divId)  {
+	var obj = preuzmi(divId);
+	var tabela = '<table border="1"><tr bgcolor="lightgray"><td align="center"><b>ID</b></td><td align="center"><b>IME I PREZIME</b></td><td align="center"><b>JMBG</b></td><td align="center"><b>SPOL</b></td><td align="center"><b>FAKULTET</b></td></tr>';
+	for(i = 0; i<studenti.length; i++) {
+		if(studenti[i].status == "crveni") {
+			tabela += '<tr style="background: red;"><td align="center"><b>' + (i+1) +'</b></td><td align="center"><b>' + studenti[i].ime + '</b></td><td align="center"><b>' + studenti[i].jmbg + '</b></td><td align="center"><b>' + studenti[i].spol + '</b></td><td align="center"><b>' + studenti[i].fakultet + '</b></td></tr>';
+		}
+		else if(studenti[i].status == "zeleni") {
+			tabela += '<tr style="background: green;"><td align="center"><b>' + (i+1) +'</b></td><td align="center"><b>' + studenti[i].ime + '</b></td><td align="center"><b>' + studenti[i].jmbg + '</b></td><td align="center"><b>' + studenti[i].spol + '</b></td><td align="center"><b>' + studenti[i].fakultet + '</b></td></tr>';
+		}
+		else {
+			tabela += '<tr"><td align="center"><b>' + (i+1) +'</b></td><td align="center"><b>' + studenti[i].ime + '</b></td><td align="center"><b>' + studenti[i].jmbg + '</b></td><td align="center"><b>' + studenti[i].spol + '</b></td><td align="center"><b>' + studenti[i].fakultet + '</b></td></tr>';
+		}
+	}
+	tabela += '</table>';
+	obj.innerHTML = tabela;
+}
+	</script>
+</body>
+</html>
+
+
+/////////////////////////////////////////////////////////////////////stara reg////////////////////////////7
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title></title>
+</head>
+
+<body>
+
+<table width = "100%" cellspacing= "default" cellpadding= "2" border ="2">
+<!-- RED -->
+<tr>
+<td colspan ="3" bgcolor = "#DDDDDD" align = "center"> <font face = "Arial, Tahoma, Verdana" size = "3"> <b>II kolokvij</b> </font> </td>
+</tr>
+
+<!-- RED -->
+<tr>
+<!-- KOLONA -->
+<td rowspan = "2" width = "25%">
+<pre><code>
+<b>
+Preformatiran tekst može se 
+koristiti za pisanje 
+poezije, te je ovaj tekst 
+još podebljan.
+</b>
+</code></pre>
+</td>
+
+<!-- KOLONA -->
+<td align = "center">
+<b><i><u>Forma za registraciju</b></i></u>
+</td>
+
+<!-- KOLONA -->
+<td rowspan = "2" width = "25%" align = "right">
+<font color = "#44DD44">
+Slova paragrafa obojana su #44DD44 nijansom, zatim je izvršeno desno poravnanje. Iza ove rečenice napravljen je prekid reda. </br>
+<b>Ovaj tekst je još i podebljan.</b>
+</font>
+</td>
+
+</tr>
+
+<!-- RED -->
+<tr>
+<td rowspan = "2">
+<table align = "center">
+<tr>
+<td>
+<img src = "slike/add-user.jpg" width = "100"/> 
+</td>
+<td>
+<!-- ovdje će ići forma -->
+<table>
+<tr>
+
+<td> Ime i prezime: </td>
+<td> <input type="text" value = "Unesite ime i prezime" id = "imeprezime"> </td>
+<td> <span id = "imeProvjera" style= "color:red" /> </td>
+</tr>
+
+<tr>
+
+<td> Email: </td>
+<td> <input type="text" value = "Unesite email" id = "email"> </td>
+<td> <span id = "emailProvjera" style= "color:red" /> </td>
+</tr>
+
+<tr>
+
+<td> Korisničko ime: </td>
+<td> <input type="text" value = "Unesite korisničko ime" id = "korisnicko"> </td>
+<td> <span id = "korisnickoProvjera" style= "color:red" /> </td>
+</tr>
+
+<tr>
+
+<td> Lozinka: </td>
+<td> <input type="password" id = "lozinka"> </td>
+
+</tr>
+
+<tr>
+
+<td> Potvrda lozinke: </td>
+<td> <input type="password" id = "potvrda"></td>
+<td> <span id = "lozinkaProvjera" style= "color:red" /> </td>
+
+</tr>
+
+<tr>
+
+<td> Uslovi registracije: </td>
+<td> <input type="checkbox" checked id = "uslovi"> <br> </td>
+
+</tr>
+
+<tr>
+
+<td colspan = "2"> <input type="submit" value="Pošalji" onclick = "ispisi()"/> <input type="reset" value="Poništi" onClick = "brisi()" ondblClick = "brisisve()"/>  </td>
+
+
+</tr>
+
+</table>
+</td>
+</tr>
+</table>
+
+<hr>
+
+<table align = "center">
+<tr>
+
+<td> Ime i prezime: </td>
+<td> <b><span id = "ime2" /></b> </td> </td>
+
+</tr>
+
+<tr>
+
+<td> Email: </td>
+<td> <b><span id = "email2" /></b> </td>
+
+</tr>
+
+<tr>
+
+<td> Korisničko ime: </td>
+<td> <b><span id = "korisnicko2" /></b></td>
+
+</tr>
+
+<tr>
+
+<td> Lozinka: </td>
+<td> <b><span id = "password2" /></b> </td>
+
+</tr>
+
+<tr>
+
+<td> Potvrda lozinke: </td>
+<td> <b><span id = "potvrda2" /></b></td>
+
+</tr>
+
+<tr>
+
+<td> Uslovi registracije: </td>
+<td> <b><span id = "uslovi2" /></b> </td>
+
+</tr>
+
+
+</table>
+
+</td>
+</tr>
+
+<!-- RED -->
+<tr>
+<td valign = "top">
+Sadržaj ćelije je vertikalno poravnat sa gornjom granicom.
+<ol type="I">
+<li> opcija </li>
+<li> opcija </li>
+<li> opcija </li>
+<li> opcija </li>
+<li> opcija </li>
+</ol>
+</td>
+
+<td align = "center" valign = "bottom">
+</br></br></br></br></br></br></br></br></br>
+Iznad ovog sadržaja je napravljeno 9 prekida reda. Sadržaj ove ćelije je horizontalno centriran, te vertikalno poravnat sa donjom granicom ćelije.
+</td>
+</tr>
+
+<!-- RED -->
+<tr>
+<td colspan = "3" bgcolor = "#DDDDDD" align = "center">
+<i>Nurfet Mehulic 1120</i>
+</td>
+</tr>
+
+</table>
+
+  
+
+</body>
+<script>
+function preuzmi(id) {
+	if(document.getElementById(id)){
+		return document.getElementById(id);
+	}
+	else {
+		alert("Nepravilan ID");
+		return false;
+	}
+}
+
+function validacijaIme(ime){
+	var regexp = /^[a-zA-Z]+$/;
+	if(ime.match(regexp) && ime.length<20){
+		preuzmi("imeProvjera").innerHTML="";
+		return true;
+	}
+	else {
+		preuzmi("imeProvjera").innerHTML = "Unesite ime korisnika!";
+		return false;
+	}
+}
+
+function validacijaEmail(email){
+	if (email.indexOf("@") !== -1){
+		preuzmi("emailProvjera").innerHTML="";
+		return true;
+	}
+	else{
+		preuzmi("emailProvjera").innerHTML = "Unesite ispravno email korisnika!";
+		return false;
+	}
+}
+
+function validacijaLozinka(lozinka, potvrda){
+	if (lozinka===potvrda){
+		preuzmi("lozinkaProvjera").innerHTML="";
+		return true;
+	}
+	else{
+		preuzmi("lozinkaProvjera").innerHTML="Potvrdite prethodno unesenu lozinku!";
+		return false;
+	}
+	
+}
+
+function validacijaKorisnicko(email){
+	var podstring = email.substring(0, email.indexOf("@"));
+	preuzmi("korisnicko").value = podstring;
+	return true;
+}
+
+function ispisi(){
+	var ime = preuzmi("imeprezime").value;
+	var email = preuzmi("email").value;
+	var lozinka = preuzmi("lozinka").value;
+	var provjera = preuzmi("potvrda").value;
+	
+	
+	var prva = validacijaIme(ime);
+	var druga = validacijaEmail(email);
+	var treca = validacijaKorisnicko(email);
+	var korisnicko = preuzmi("korisnicko").value;
+	var cetvrta = validacijaLozinka(lozinka, provjera);
+	
+	if (prva && druga && treca && cetvrta){
+		preuzmi("ime2").innerHTML = ime;
+		preuzmi("email2").innerHTML = email;
+		preuzmi("password2").innerHTML = lozinka;
+		preuzmi("potvrda2").innerHTML = provjera;
+		preuzmi("korisnicko2").innerHTML = korisnicko;
+		if(preuzmi("uslovi").checked == true){
+			preuzmi("uslovi2").innerHTML = "Prihvaćeni";
+		}
+	else{
+		preuzmi("uslovi2").innerHTML = "Nisu prihvaćeni";
+	}
+	}
+	
+	// ponistavanje greski
+	if (!prva){
+		preuzmi("imeprezime").value = "Unesite ime i prezime";
+	}
+	if (!druga){
+		preuzmi("email").value = "Unesite email";
+	}
+	if (!treca){
+		preuzmi("korisnicko").value = "";
+	}
+	if (!cetvrta){
+		preuzmi("lozinka").value = "";
+		preuzmi("potvrda").value = "";
+	}
+}
+
+function brisi(){
+		preuzmi("imeprezime").value = "Unesite ime i prezime";
+		preuzmi("email").value = "Unesite email";
+		preuzmi("korisnicko").value = "";
+		preuzmi("lozinka").value = "";
+		preuzmi("potvrda").value = "";
+		preuzmi("uslovi").checked = true;
+}
+
+function brisisve(){
+		preuzmi("ime2").innerHTML = "";
+		preuzmi("email2").innerHTML = "";
+		preuzmi("korisnicko2").innerHTML = "";
+		preuzmi("password2").innerHTML = "";
+		preuzmi("potvrda2").innerHTML = "";
+		preuzmi("uslovi2").innerHTML = "";
+}
+</script>
+</html>
+
+
+//////////////////////////////////////////////////////////student1
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title> Studenti ^_^ </title>
+</head>
+
+<body>
+<div style="width: 50%; margin: 0 auto;">
+<h2> Prijava na fakultet UNBI </h2>
+
+
+<input type="radio" name="opcija" onclick="prikaziSakrij('dodaj', 'visible');"> Dodaj &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+<input type="radio" name="opcija" onclick="prikaziSakrij('pregledaj', 'visible');"> Pregledaj </br>
+
+
+
+<div id ="dodaj" style = "margin-top: 50px; visibility:hidden">
+<h2> Dodaj </h2>
+<table>
+
+<!-- red -->
+<tr>
+<td>
+Ime i prezime:
+</td>
+
+<td>
+<input type="text" id ="ime" />
+</td>
+<td>
+<span id = "imeProvjera"; style="color:red" />
+</td>
+</tr>
+
+<!-- red -->
+<tr>
+<td>
+JMBG:
+</td>
+
+<td>
+<input type="text" id = "jmbg" />
+</td>
+
+<td>
+<span id = "jmbgProvjera"; style="color:red" />
+</td>
+</tr>
+
+<!-- red -->
+<tr>
+<td>
+Spol studenta:
+</td>
+
+<td>
+<select id="spol" >
+<option>... </option>
+<option value = "M"> Muški </option>
+<option value = "Z"> Ženski </option>
+<option value = "N"> Neodređeno </option>
+</select>
+</td>
+
+<td>
+<span id = "spolProvjera"; style="color:red" />
+</td>
+</tr>
+
+<!-- red -->
+<tr>
+<td>
+Fakultet:
+</td>
+
+<td>
+<select id = "fakultet" >
+<option value = "TF"> Tehnički fakultet </option>
+<option value = "PDF"> Pedagoški fakultet </option>
+<option value = "PRF"> Pravni fakultet </option>
+</select>
+</td>
+
+<td>
+<span id = "fakultetProvjera"; style="color:red" />
+</td>
+</tr>
+
+<!-- red -->
+<tr>
+<td>
+Potvrda registracije:
+</td>
+<td>
+<input type ="button" id="prvi" value ="POTVRDI" onclick="dodajStudenta()"/>
+</td>
+<td>
+<span style = "color: red;" />
+</td>
+</tr>
+
+
+</table>
+</div>
+
+<div id ="pregledaj" style = "margin-top: 50px; visibility:hidden">
+
+<h3> Spisak svih studenata </h3>
+<div id = "tabela">
+
+</div>
+
+Status: <br>
+Zadovoljio: <input type="radio" name ="status" id="status1" value="zeleni"/> &nbsp; &nbsp; &nbsp; &nbsp; 
+Nije zadovoljio: <input type ="radio" name ="status" id="status2" value="crveni"/> </br>
+OZNAČI POLJE </br>
+<input type = "text" id ="polje">
+<input type = "button" id ="drugi" value ="STATUS" onclick="dodijeliStatus('polje')"/> &nbsp;
+<input type = "button" id = "treci" value = "BRISANJE" onclick = "ukloni('polje')"/> &nbsp;
+<input type = "button" id = "cetvrti" value = "PRINTANJE" onclick = "window.print()" />
+</div>
+
+
+
+</div>
+</body>
+
+<script>
+var studenti = [];
+
+function prikaziSakrij(id, stanje){
+	var objekat = document.getElementById(id);
+	if (id=="dodaj"){
+		objekat.style.visibility = stanje;
+		document.getElementById("pregledaj").style.visibility="hidden";
+	}
+	else{
+		objekat.style.visibility = stanje;
+		document.getElementById("dodaj").style.visibility="hidden";
+	}
+}
+
+function preuzmi(id) {
+	if(document.getElementById(id)){
+		return document.getElementById(id);
+	}
+	else {
+		alert("Nepravilan ID");
+		return false;
+	}
+}
+
+function validacijaImePrezime(ime){
+	var regexp = /^[a-zA-Z]+$/;
+	if(ime.match(regexp)){
+		preuzmi("imeProvjera").innerHTML = "";
+		return true;
+	}
+	else {
+		preuzmi("imeProvjera").innerHTML = "Niste pravilno unijeli ime i prezime";
+		return false;
+	}
+}
+
+function validacijaJMBG(jmbg, fakultet) {
+	var regexp = /^[0-9]+$/;
+	if(jmbg.match(regexp)){
+		jmbg = parseInt(jmbg);
+		for(i=0; i<studenti.length; i++){
+			if(jmbg == studenti[i].jmbg && fakultet == studenti[i].fakultet){
+				preuzmi("jmbgProvjera").innerHTML = "Niste pravilno unijeli JMBG";
+				return false;
+			}
+		}
+		
+		preuzmi("jmbgProvjera").innerHTML = "";
+		return true;
+	}
+	else {
+		preuzmi("jmbgProvjera").innerHTML = "Niste pravilno unijeli JMBG";
+		return false;
+	}
+}
+
+function validacijaSpol(spol){
+	if(spol == "M" || spol == "Z" || spol == "N"){
+		preuzmi("spolProvjera").innerHTML = "";
+		return true;
+	}
+	else{
+		preuzmi("spolProvjera").innerHTML = "Niste pravilno unijeli spol";
+		return false;
+	}
+}
+
+function dodajStudenta(){
+	var ime = preuzmi("ime").value;
+	var jmbg = preuzmi("jmbg").value;
+	var spol = preuzmi("spol").value;
+	var fakultet = preuzmi("fakultet").value;
+	
+	var prva = validacijaImePrezime(ime);
+	var druga = validacijaJMBG(jmbg, fakultet);
+	var treca = validacijaSpol(spol);
+	
+	if(prva && druga && treca){
+		var student ={ime:ime, jmbg:jmbg, spol:spol, fakultet:fakultet, status:"nema"};
+		studenti.push(student);
+		kreirajTabelu("tabela");	
+		preuzmi("ime").value ="";		
+		alert("Unos izvrsen");
+	}
+}
+
+function kreirajTabelu(divid){
+	var objekat = preuzmi(divid);
+	
+	var tabela = '<table border = "1"><tr bgcolor = "lightgray"> <td align="center"> <b> ID </b> </td> <td align="center"> <b> Ime </b></td> <td align="center"><b> JMBG </b></td> <td align="center"><b> Spol </b></td><td align="center"><b> Fakultet </b></td> </tr>';
+	for (i=0; i<studenti.length; i++){
+		if(studenti[i].status=="crveni"){
+			tabela += '<tr style="background:red"> <td align = "center">' + (i+1) +' </td> <td align = "center"> '+studenti[i].ime +'</td> <td align = "center"> '+studenti[i].jmbg +'</td> <td align = "center"> ' +studenti[i].spol+' </td> <td align = "center"> '+studenti[i].fakultet +'</td></tr>';
+		}
+		if(studenti[i].status=="zeleni"){
+			tabela += '<tr style="background: green"> <td align = "center">' + (i+1) +' </td> <td align = "center">' + studenti[i].ime +' </td> <td align = "center">' + studenti[i].jmbg +' </td> <td align = "center"> ' +studenti[i].spol +' </td> <td align = "center"> ' +studenti[i].fakultet +' </td></tr>';
+		}
+		if(studenti[i].status=="nema"){
+			tabela += '<tr> <td align = "center">' + (i+1) +' </td> <td align = "center"> ' +studenti[i].ime +' </td> <td align = "center">' + studenti[i].jmbg +' </td> <td align = "center">' + studenti[i].spol +' </td> <td align = "center">' + studenti[i].fakultet +' </td></tr>';
+		}
+	}
+	tabela += '</table>';
+	objekat.innerHTML = tabela;
+}
+
+function dodijeliStatus(id){
+	var obj = preuzmi(id).value;
+	var jelicrven = preuzmi("status2");
+	var jelizelen = preuzmi("status1");
+	
+	var status;
+	
+	if(jelicrven.checked){
+		status = "crveni";
+	}
+	if(jelizelen.checked){
+		status = "zeleni";
+	}
+	for(i = 0; i<studenti.length; i++){
+		if(obj==(i+1)){
+			studenti[i].status=status;
+		}
+	}
+		kreirajTabelu("tabela");
+		if (obj == "") {
+        alert('Unesite ID studetna kojem zelite dodijeliti status!');
+                }
+}
+
+function ukloni(id){
+	var objekat = preuzmi(id).value;
+	for (i = 0; i<studenti.length; i++){
+		if (objekat == (i+1)){
+			studenti.splice(i, 1);
+		}
+	}
+	kreirajTabelu("tabela");
+	if (obj == "") {
+        alert('Unesite ID studetna kojeg zelite obrisati!');
+                }
+}
+</script>
+</html>
+
+
+//////////////////////////////////////////////////////////////////nezavr
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title> Studenti </title>
+</head>
+
+<body>
+
+<h2> 50 poena - vandredni rok </h2>
+<input type = "radio" name = "opcija" onclick = "prikaziSakrij('dodaj', 'visible')"> Dodaj &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+<input type = "radio" name = "opcija" onclick = "prikaziSakrij('pregledaj', 'visible')"> Pregledaj </br>
+
+
+<div id = "dodaj" style ="margin-top: 50px; visibility: hidden">
+<table>
+
+<tr>
+<td>
+Ime:
+</td>
+<td>
+<input type = "text" id = "ime" />
+</td>
+<td>
+<span id = "imeProvjera" style = "color: red" />
+</td>
+</tr>
+
+<tr>
+<td>
+Prezime:
+</td>
+<td>
+<input type = "text" id = "prezime" />
+</td>
+<td>
+<span id = "prezimeProvjera" style = "color: red" />
+</td>
+</tr>
+
+<tr>
+<td>
+Br indexa:
+</td>
+<td>
+<input type = "text" id = "indeks" />
+</td>
+<td>
+<span id = "indeksProvjera" style = "color: red" />
+</td>
+</tr>
+
+<tr>
+<td>
+Ispitni rok:
+</td>
+<td>
+<select name = "izaberirok" id = "rok">
+<option value = "izaberi"> Izaberite... </option>
+<option value = "jan"> Januar </option>
+<option value = "feb"> Februar </option>
+<option value = "jun"> Jun </option>
+<option value = "jul"> Jul </option>
+</select>
+</td>
+<td>
+<span id = "rokProvjera" style = "color: red" />
+</td>
+</tr>
+
+<tr>
+<td>
+Broj poena:
+</td>
+<td>
+<input type = "text" id = "poeni" />
+</td>
+<td>
+<span id = "poeniProvjera" style = "color: red" />
+</td>
+</tr>
+
+<tr>
+<td>
+<input type = "button" value ="POŠALJI" onclick = "dodajStudenta()" /> 
+</td>
+</tr>
+
+</table>
+</div>
+
+<div id = "pregledaj" style = "margin-top: 50px; visibility: hidden">
+<h3> Pogledaj studente </h3>
+
+<div id = "tabela1" >
+<table border = "1">
+<tr>
+<td> Rb: </td><td>Ime:</td><td>Prezime</td><td>Br. indeksa</td><td>Rok:</td><td>Broj poena</td><td>Izbriši</td>
+</tr>
+</table>
+</div>
+
+<input type = "button" value= "Obračunaj poene" onclick = "obracunaj()"/>
+
+
+<h3> NISU POLOŽILI </h3>
+<div id = "tabela2" >
+<table border = "1" >
+<tr>
+<td> Rb: </td><td>Ime:</td><td>Prezime:</td><td>Br. indeksa:</td><td>Rok:</td><td>Broj poena:</td>
+</tr>
+</table>
+</div>
+
+<h3> POLOŽILI </h3>
+<div id = "tabela3" >
+<table border = "1">
+<tr>
+<td> Rb: </td><td>Ime:</td><td>Prezime:</td><td>Br. indeksa:</td><td>Rok:</td><td>Broj poena:</td>
+</tr>
+</table>
+</div>
+</div>
+
+</body>
+
+<script>
+var studenti = [];
+
+function prikaziSakrij(id, stanje) {
+	var objekat = document.getElementById(id);
+	if(id == "dodaj"){
+		objekat.style.visibility = stanje;
+		document.getElementById("pregledaj").style.visibility = "hidden";
+	}
+	if(id == "pregledaj") {
+		objekat.style.visibility = stanje;
+		document.getElementById("dodaj").style.visibility = "hidden";
+	}
+}
+
+function preuzmi(id) {
+	if(document.getElementById(id)){
+		return document.getElementById(id);
+	}
+	else{
+		//alert("Nepravilan id");
+		return false;
+	}
+}
+
+function validacijaIme(ime){
+	var regExp = /^[a-zA-Z]+$/;
+	if (ime.match(regExp) && ime.length<=15){
+		preuzmi("imeProvjera").innerHTML = "";
+		return true;
+	}
+	else{
+		preuzmi("imeProvjera").innerHTML = "Unesite ime studenta!";
+		return false;
+	}
+}
+
+function validacijaPrezime(prezime){
+	var regExp = /^[a-zA-Z]+$/;
+	if (prezime.match(regExp)){
+		preuzmi("prezimeProvjera").innerHTML = "";
+		return true;
+	}
+	else{
+		preuzmi("prezimeProvjera").innerHTML = "Unesite prezime studenta!";
+		return false;
+	}
+}
+
+function validacijaIndeks(indeks){
+	var regExp = /^[1-9]+$/;
+	if (indeks.match(regExp)){
+		preuzmi("indeksProvjera").innerHTML = "";
+		return true;
+	}
+	else{
+		preuzmi("indeksProvjera").innerHTML = "Unesite ispravno index studenta!";
+		return false;
+	}
+}
+
+function validacijaBroj(rok, poeni){
+	poeni = parseInt(poeni);
+	if (poeni>=0 && poeni<=20 && rok != "izaberi"){
+		preuzmi("poeniProvjera").innerHTML = "";
+		return true;
+	}
+	else{
+		preuzmi("poeniProvjera").innerHTML = "Unesite broj poena!";
+		return false;
+	}	
+}
+
+function kreirajTabelu(id){
+	var objekat = preuzmi(id);
+	
+	var tabela = '<table border = "1"><tr><td> Rb: </td><td>Ime:</td><td>Prezime</td><td>Br. indeksa</td><td>Rok:</td><td>Broj poena</td><td>Izbriši</td></tr>'
+	for (i = 0; i<studenti.length; i++){
+		if(studenti[i].poeni >=10){
+			tabela+='<tr style="background:red"><td>'+(i+1)+'</td><td>'+studenti[i].ime +'</td><td>'+studenti[i].prezime+'</td><td>'+studenti[i].indeks+'</td><td>'+studenti[i].rok+'</td><td>'+studenti[i].poeni+'</td><td><input type = "button" value = "Izbriši" onclick = "Izbrisi(i)"</td></tr>';
+		}
+		if(studenti[i].poeni <10){
+			tabela+='<tr style="background:yellow"><td>'+(i+1)+'</td><td>'+studenti[i].ime +'</td><td>'+studenti[i].prezime+'</td><td>'+studenti[i].indeks+'</td><td>'+studenti[i].rok+'</td><td>'+studenti[i].poeni+'</td><td><input type = "button" value = "Izbriši" onclick = "Izbrisi(i)"</td></tr>';
+		}
+	}
+	tabela += '</table>';
+	objekat.innerHTML = tabela;
+}
+
+function dodajStudenta(){
+	var ime = preuzmi("ime").value;
+	var prezime = preuzmi("prezime").value;
+	var indeks = preuzmi("indeks").value;
+	var rok = preuzmi("rok").value;
+	var poeni = preuzmi("poeni").value;
+	
+	var prva = validacijaIme(ime);
+	var druga = validacijaPrezime(prezime);
+	var treca = validacijaIndeks(indeks);
+	var cetvrta = validacijaBroj(rok, poeni);
+	poeni = parseInt(poeni);
+	
+	if (prva && druga && treca && cetvrta){
+		var student = {ime: ime, prezime: prezime, indeks: indeks, rok: rok, poeni: poeni};
+		studenti.push(student);
+		kreirajTabelu("tabela1");
+		alert("Student je dodan. "+ime + " "+ prezime);
+		preuzmi("ime").value = "";
+		preuzmi("prezime").value = "";
+		preuzmi("indeks").value = "";
+		preuzmi("rok").value = "izaberi";
+		preuzmi("poeni").value = "";
+	}
+}
+
+function Izbrisi(id){
+	var objekat = preuzmi(id).value;
+	for (i =0; i<studenti.length; i++){
+		if(objekat == i);
+		studenti.splice(i, 1);
+		break;
+	}
+	kreirajTabelu("tabela1");
+	if(objekat==""){
+		alert("Neispravan student");
+	}
+}
+
+</script>
+</html>
