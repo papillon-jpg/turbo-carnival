@@ -1,1 +1,729 @@
+SPAIN ///////////////////////////////////////7
+<html>
+<head>
+		   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		   <script>
+		   var evidencija = [];
+
+
+function validacijaVrijeme(vrijeme){
+	
+	     var reg = /^[0-9]+$/;
+		 
+		 var t = parseInt(vrijeme);
+		 
+		     if(t > 0 && t < 90 && vrijeme.match(reg)){
+				 
+				 for(var i=0; i<evidencija.length; i++){
+					 
+					 if(t <= parseInt(evidencija[i].Vrijeme)){
+						 
+						 alert("Vrijeme vec uneseno");
+						 
+						 return false;
+						 
+					 }
+					 
+				 }
+				 
+				 return true;
+				 
+			 }
+			 else{
+				 
+				 alert("Vrijeme uneseno pogresno");
+						 
+				 return false;
+				 
+			 }
+			 	
+};
+
+
+function preuzmi(id){
+	
+	     if(document.getElementById(id)){
+			 
+			 return document.getElementById(id);
+			 
+		 }
+	
+	  return false;
+	
+};
+
+
+
+function validacija(){
+	
+	
+	     var val1 = validacijaVrijeme(preuzmi("vrijeme").value);
+	
+	     if(val1 == true){ 
+		 
+		     return true;
+		 
+		 }
+		 else{
+			 
+			 return false;
+			 
+		 }
+	
+};
+
+
+function dodajGol(){
+	
+	
+	     if(validacija() == true){
+			 
+			 var tim = preuzmi("tim").value;
+			 
+			 var vrijeme = preuzmi("vrijeme").value;
+			 
+			 var objekt = {Tim: tim, Vrijeme: vrijeme};
+			 
+			 evidencija.push(objekt);
+			 
+			 alert("Objekat uspjesno kreiran");
+			 
+			 kreirajTabele();
+			 
+			 
+		 }
+	
+	
+	  return false;
+	
+	
+};
+
+
+function izracunajRezultat(contId){
+	
+	     var tim1 = 0;
+		 
+		 var tim2 = 0;
+		 
+		 for(var i=0; i<evidencija.length; i++){
+			 
+			  if(evidencija[i].Tim == "Bosna"){
+				  
+				  tim1 = tim1 + 1;
+				  
+			  }
+			  else{
+				  
+				  tim2 = tim2 + 1;
+				  
+			  }
+			 
+		 }
+	
+	     preuzmi("rezultat").innerHTML = tim1+"-"+tim2;
+		 
+		 var t = setTimeout('izracunajRezultat("rezultat")', 3000);
+	
+};
+
+
+
+function kreirajTabele(){
+	
+	     var tabela = "<table border = '1'><tr> <td colspan = '3' align = 'center'>Evidencija golova</td> </tr> <tr> <td>RB:</td> <td>Reprezentacija</td> <td>Vrijeme</td> </tr>"
+	
+	     for(var i=0; i<evidencija.length; i++){
+			 
+			 tabela = tabela + "<tr> <td>"+(i+1)+"</td> <td>"+evidencija[i].Tim+"</td> <td>"+evidencija[i].Vrijeme+"</td> </tr>";
+			  
+		 }
+		 
+		 tabela += "</table>";
+		 
+		 preuzmi("tabela").innerHTML = tabela;
+	
+};
+
+
+
+function obrisi(){
+	
+	
+	     var t = preuzmi("stavka").value;
+		 
+		 evidencija.splice(t-1,1);
+		 
+		 kreirajTabele();
+		
+};
+		   </script>
+	  
+	  </head>
+	  
+	  <body onload = "izracunajRezultat('rezultat')">
+	  
+	  
+	        <div id = "evidencija" align = "center">
+			
+			   <b><h1>Bosna i Hercegovina - Spanija</h1></b>
+			   
+			   <h2 id = "rezultat"></h2>
+			   
+			   <form>
+			   
+			   <table border = "1">
+			   
+			          <tr>
+					  
+					       <td colspan = "2" align = "center">
+						   
+						       Unos evidencije
+						   
+						   </td>
+					  
+					  </tr>
+					  
+					  <tr>
+					  
+					      <td>
+						  
+						      Reprezentacija:
+						  
+						  </td>
+						  
+						  <td>
+						  
+						     <select id = "tim">
+							 
+							    <option value = "Bosna">Bosna i Hercegovina</option>
+								
+								<option value = "Spanija">Spanija</option>
+							 
+							 </select>
+						  
+						  </td>
+					  
+					  </tr>
+					  
+					  <tr>
+					  
+					      <td>
+						  
+						      Vrijeme:
+						  
+						  </td>
+						  
+						  <td>
+						  
+						    <input type = "text" id = "vrijeme"/>
+						  
+						  </td>
+					  
+					  </tr>
+					  
+					  <tr>
+					  
+					      <td colspan = "2" align = "center">
+						  
+						      <input type = "button" value = "DODAJ" onclick = "dodajGol()"/>
+						  
+						  </td>
+					  
+					  </tr>
+					  
+			   </table>
+			   
+			   </form>
+			
+			</div>
+			
+			<br><br>
+			
+			<div id = "tabela" align = "center">
+			
+			
+			
+			</div>
+			
+			<br><br>
+			
+			<div align = "center">
+			
+			     <tr>
+					  
+					  <td>
+					  
+					      RB:
+					  
+					  </td>
+					  
+					  <td>
+					  
+					    <input type = "text" id = "stavka"/>
+					  </td>
+					  <td>
+					      <input type = "button" value = "PONISTI" onclick = "obrisi()"/>
+					  </td>
+			     </tr>
+			</div>
+	  </body>
+</html>
+
+//////////////////////////////////////////////////////////////////////////////////////////
+ESTONIA
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Zadatak</title>
+<style>
+    .zuti {
+        background-color: yellow;
+    }
+    .crveni {
+        background-color: red;
+    }
+</style>
+</head>
+<body>
+
+<table align="center" width="40%" border="1px">
+<tr>
+<td style="background-color: #DDDDDD" align="center">
+<b><i>Internet programiranje (II kolokvij)</i></b>
+</td>
+</tr>
+
+<tr>
+<td>
+<table align="center">
+<tr>
+<td align="center"><h3>BOSNA I HERCEGOVINA</h3></td>
+<td align="center"><h3>ESTONIJA</h3></td>
+</tr>
+<tr>
+<td><img src="bih.png" width="150px" height="150px"></td>
+<td><img src="estonija.png" width="150px" height="150px"></td>
+</tr>
+</table>
+</td>
+</tr>
+
+<tr align="center">
+<td>
+<table>
+<tr>
+<td>Ime i prezime:</td>
+<td><input type="text" id="ime"></td>
+<td><span id="imeProvjera" style="color: red"></span></td>
+</tr>
+
+<tr>
+<td>Broj dresa:</td>
+<td><input type="text" id="broj"></td>
+<td><span id="brojProvjera" style="color: red"></span></td>
+</tr>
+
+<tr>
+<td>Tim:</td>
+<td>
+<select id="tim">
+<option value="bos">Bosna i Hercegovina</option>
+<option value="esto">Estonija</option>
+</select>
+</td>
+<td><span id="timProvjera" style="color: red"></span></td>
+</tr>
+</table>
+
+<input type="button" value="DODAJ IGRAČA" onclick="noviUnos()"/> 
+<input type="button" value="PONIŠTI UNOS" onclick="ponistiUnos()" /> 
+<input type="button" value="DODIJELI KARTON" onclick="dodijeliKarton()"/>
+
+</td>
+</tr>
+
+<tr style="background: #DDDDDD">
+<td>
+<center><i>Sajra Alijagić, 1279,</i> &copy; <i>2025</i></center>
+</td>
+</tr>
+</table>
+
+<table align="center" >
+<tr>
+<td>
+<h3>IGRAČI: Bosna i Hercegovina</h3>
+<div id="bosanski"></div>
+</td>
+</tr>
+<tr>
+<td>
+<h3>IGRAČI: Estonija</h3>
+<div id="estonski"></div>
+</td>
+</tr>
+</table>
+
+<script>
+var bihIgraci = [];
+var estonijaIgraci = [];
+var brojKlikova = 0;  // Broj klikova za kartone
+
+function preuzmi(id) {
+    return document.getElementById(id);
+}
+
+function validacija_forme() {
+    var imeprezime = preuzmi("ime").value;
+    var broj = preuzmi("broj").value;
+    var tim = preuzmi("tim").value;
+
+    return validacija_ime_prezime(imeprezime) && validacija_broja_dresa(broj, tim === "bos" ? bihIgraci : estonijaIgraci);
+}
+
+function validacija_ime_prezime(tekst) {
+    if (tekst.length > 0) {
+        preuzmi("imeProvjera").innerHTML = "";
+        return true;
+    } else {
+        preuzmi("imeProvjera").innerHTML = "Unesite ime i prezime";
+        return false;
+    }
+}
+
+function validacija_broja_dresa(broj, nizIgraca) {
+    if (broj === "" || isNaN(broj)) {
+        preuzmi("brojProvjera").innerHTML = "Unesite validan broj dresa";
+        return false;
+    }
+    if (broj > 99) {
+        preuzmi("brojProvjera").innerHTML = "Broj ne smije biti veći od dvocifrenog";
+        return false;
+    }
+    if (nizIgraca.some(igrac => igrac.broj === broj)) {
+        preuzmi("brojProvjera").innerHTML = "Postoji igrač s istim brojem";
+        return false;
+    }
+    preuzmi("brojProvjera").innerHTML = "";
+    return true;
+}
+
+function noviUnos() {
+    var imeprezime = preuzmi("ime").value;
+    var broj = preuzmi("broj").value;
+    var tim = preuzmi("tim").value;
+
+    if (validacija_forme()) {
+        var igrac = { ime: imeprezime, broj: broj, karton: null };
+        if (tim === "bos") {
+            bihIgraci.push(igrac);
+        } else {
+            estonijaIgraci.push(igrac);
+        }
+        prikaziNizIgraca(bihIgraci, "bosanski");
+        prikaziNizIgraca(estonijaIgraci, "estonski");
+    }
+}
+
+function prikaziNizIgraca(nizIgraca, elem) {
+    var objekat = preuzmi(elem);
+    var tabela = "<table border='1px' width='100%'><tr><td><b>R. Br.</b></td><td><b>Ime i prezime</b></td><td><b>Broj dresa</b></td></tr>";
+    nizIgraca.forEach(function(igrac, i) {
+        var boja = igrac.karton === "zuti" ? "zuti" : igrac.karton === "crveni" ? "crveni" : "";
+        tabela += "<tr class='" + boja + "'><td>" + (i + 1) + "</td><td>" + igrac.ime + "</td><td>" + igrac.broj + "</td></tr>";
+    });
+    tabela += "</table>";
+    objekat.innerHTML = tabela;
+}
+
+function ponistiUnos() {
+    preuzmi("ime").value = "";
+    preuzmi("broj").value = "";
+    preuzmi("tim").value = "bos";
+    preuzmi("imeProvjera").innerHTML = "";
+    preuzmi("brojProvjera").innerHTML = "";
+}
+
+function dodijeliKarton() {
+    brojKlikova++; // Svaki klik povećava brojač
+
+    var broj = preuzmi("broj").value;
+    var tim = preuzmi("tim").value;
+
+    if (broj === "" || (tim !== "bos" && tim !== "esto")) {
+        alert("Unesite ispravan broj dresa i tim.");
+        return;
+    }
+
+    var igraci = tim === "bos" ? bihIgraci : estonijaIgraci;
+    var igrac = igraci.find(function(igrac) {
+        return igrac.broj === broj;
+    });
+
+    if (brojKlikova === 1) {
+        igrac.karton = "zuti"; // Žuti karton
+    } else if (brojKlikova === 2) {
+        igrac.karton = "crveni"; // Crveni karton
+        brojKlikova = 0; // Resetiraj broj klikova
+    }
+
+    prikaziNizIgraca(bihIgraci, "bosanski");
+    prikaziNizIgraca(estonijaIgraci, "estonski");
+}
+</script>
+
+</body>
+</html>
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+ARGENTINA
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title> Bosnia and Herzegovina - Argentina </title>
+</head>
+
+<body>
+<div style="width: 50%; margin: 0 auto;">
+<h2> Bosnia and Herzegovina - Argentina </h2>
+
+Dodaj: <input type="radio" name="opcija" onclick="prikaziSakrij('dodaj', 'visible');"/> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+Pregledaj: <input type="radio" name="opcija" onclick="prikaziSakrij('pregledaj', 'visible');"/> 
+
+<div id ="dodaj" style = "margin-top: 50px; visibility:hidden">
+<h2> Dodaj </h2>
+			<table>
+				<tr>
+					<td>
+						Ime i prezime:
+					</td>
+					<td>
+						<input type="text" id="ime"/>
+					</td>
+					<td>
+						<span id="imeProvjera" style="color: red;"></span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Broj dresa:
+					</td>
+					<td>
+						<input type="text" id="dres"/>
+					</td>
+					<td>
+						<span id="dresProvjera" style="color: red;"></span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Reprezentacija:
+					</td>
+					<td>
+						<select id="reprezentacija">
+							<option>...</option>
+							<option value="BiH">Bosna i Hercegovina</option>
+						</select>
+					</td>
+					<td>
+						<span  style="color: red;"></span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Pozicija:
+					</td>
+					<td>
+						<select id="pozicija">
+							<option value="tacke">...</option>
+							<option value="napad">Napad</option>
+							<option value="vezni">Vezni</option>
+							<option value="odbrana">Odbrana</option>
+							<option value="golman">Golman</option>
+						</select>
+					</td>
+					<td>
+						<span id="pozicijaProvjera" style="color: red;"></span>
+					</td>
+				</tr>		
+				<tr>
+					<td>
+						Potvrda registacije:
+					</td>
+					<td>
+						<input type="button" id="btn1" value="POTVRDI" onclick="dodajIgraca()"/>
+					</td>
+					<td>
+						<span style="color: red;"></span>
+					</td>
+				</tr>
+			</table>
+</div>
+
+<div id ="pregledaj" style = "margin-top: 50px; visibility:hidden">
+
+<h3>Pogledaj</h3>
+			<div id="tabela">
+				
+			</div>
+			Boja kartona: <br>
+			Zuti: <input type="radio" name="status" id="status1" value="zeleni"/> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+			Crveni: <input type="radio" name="status" id="status2" value="crveni"/> <br>
+			Označi polje: <br>
+			<input type="text" id="polje">
+			<input type="button" id="btn2" value="KARTON" onclick="dodijeliKarton('polje')"/> &nbsp 
+			<input type="button" id="btn3" value="IZBACI IZ TIMA" onclick="ukoniIzTabele('polje')"/> &nbsp
+</div>
+</div>
+</body>
+
+<script>
+var igraci = [];
+
+function validacijaImePrezime(imePrezime) {
+	var regexp = /^[a-zA-Z\s]+$/;
+	if(imePrezime.match(regexp)) {
+		preuzmi("imeProvjera").innerHTML = "";
+		return true;
+	}
+	else {
+		preuzmi("imeProvjera").innerHTML = "Niste pravilno unijeli ime i prezime!";
+		return false;
+	}
+}
+
+function validacijaBrojaDresa(dres, pozicija) {
+	var regexp = /^[0-9]+$/;
+	if(dres.match(regexp)) {
+		dres = parseInt(dres);
+		for(i = 0; i<igraci.length; i++) {
+			if(igraci[i].pozicija == pozicija&& igraci[i].dres == dres) {
+				preuzmi("dresProvjera").innerHTML = "Niste pravilno unijeli broj dresa!";
+				return false;
+			}
+		}
+		preuzmi("dresProvjera").innerHTML = "";
+		return true;
+	}
+	else {
+		preuzmi("dresProvjera").innerHTML = "Niste pravilno unijeli broj dresa!";
+		return false;
+	}
+}
+
+function validacijaPozicije(pozicija) {
+	if(pozicija == "napad" || pozicija == "vezni" || pozicija == "odbrana" || pozicija == "golman") {
+		preuzmi("pozicijaProvjera").innerHTML = "";
+		return true;
+	}
+	else {
+		preuzmi("pozicijaProvjera").innerHTML = "Niste izabrali poziciju!";
+		return false;
+	}
+}
+
+function preuzmi(id) {
+	if(document.getElementById(id))
+		return document.getElementById(id);
+	else {
+		//alert("Nepravilan ID objekta");
+		return false;
+	}
+}
+
+function prikaziSakrij(id, stanje)  {
+	var obj = document.getElementById(id);
+	if(id == "dodaj") {
+		obj.style.visibility = stanje;
+		document.getElementById("pregledaj").style.visibility = "hidden";
+	}
+	else {
+		obj.style.visibility = stanje;
+		document.getElementById("dodaj").style.visibility = "hidden";
+	}
+}
+
+function dodajIgraca() {
+	var ime = preuzmi("ime").value;
+	var dres = preuzmi("dres").value;
+	var reprezentacija = preuzmi("reprezentacija").value;
+	var pozicija = preuzmi("pozicija").value;
+	
+	var v1 = validacijaImePrezime(ime);
+	var v2 = validacijaBrojaDresa(dres, pozicija);
+	var v3 = validacijaPozicije(pozicija);
+	
+	if(v1 && v2 && v3) {
+		var igrac = {ime: ime, dres: dres, pozicija: pozicija, reprezentacija: reprezentacija, status: "nema"};
+		igraci.push(igrac);
+		kreirajTabelu("tabela");
+	alert("Unos izvršen");
+	}
+}
+
+
+function dodijeliKarton(id) {
+	var obj = preuzmi(id).value;
+	var zeleni = preuzmi("status1");
+	var crveni = preuzmi("status2");
+	var status;
+	if(zeleni.checked) {
+		status = "zeleni";
+	}
+	if (crveni.checked) {
+		status = "crveni";
+	}
+	
+	for(i = 0; i<igraci.length; i++) {
+		if((i+1) == obj) {
+			igraci[i].status = status;
+		}
+	}
+	kreirajTabelu("tabela");
+		
+		if (obj == "") {
+        alert('Unesite ID igraca kojem zelite dodijeliti karton!');
+                }
+}
+
+
+function ukoniIzTabele(id) {
+	var obj = preuzmi(id).value;
+	
+	for(i = 0; i<igraci.length; i++) {
+		if((i+1) == obj) {
+			igraci.splice(i, 1); //splice uklanja elemente
+		}
+	}
+	if (obj == "") {
+        alert('Unesite ID igraca kojeg zelite obrisati iz tabele!');
+                }
+	kreirajTabelu("tabela");
+}
+
+function kreirajTabelu(divId)  {
+	var obj = preuzmi(divId);
+	var tabela = '<table border="1"><tr bgcolor="lightgray"><td align="center"><b>ID</b></td><td align="center"><b>IME I PREZIME</b></td><td align="center"><b>BROJ DRESA</b></td><td align="center"><b>REPREZENTACIJA</b></td><td align="center"><b>POZICIJA</b></td></tr>';
+	for(i = 0; i<igraci.length; i++) {
+		if(igraci[i].status == "crveni") {
+			tabela += '<tr style="background: red;"><td align="center"><b>' + (i+1) +'</b></td><td align="center"><b>' + igraci[i].ime + '</b></td><td align="center"><b>' + igraci[i].dres + '</b></td><td align="center"><b>' + igraci[i].reprezentacija + '</b></td><td align="center"><b>' + igraci[i].pozicija + '</b></td></tr>';
+		}
+		else if(igraci[i].status == "zeleni") {
+			tabela += '<tr style="background: green;"><td align="center"><b>' + (i+1) +'</b></td><td align="center"><b>' + igraci[i].ime + '</b></td><td align="center"><b>' + igraci[i].dres + '</b></td><td align="center"><b>' + igraci[i].reprezentacija + '</b></td><td align="center"><b>' + igraci[i].pozicija + '</b></td></tr>';
+		}
+		else {
+			tabela += '<tr"><td align="center"><b>' + (i+1) +'</b></td><td align="center"><b>' + igraci[i].ime + '</b></td><td align="center"><b>' + igraci[i].dres + '</b></td><td align="center"><b>' + igraci[i].reprezentacija + '</b></td><td align="center"><b>' + igraci[i].pozicija + '</b></td></tr>';
+		}
+	}
+	tabela += '</table>';
+	obj.innerHTML = tabela;
+}
+</script>
+</html>
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
